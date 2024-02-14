@@ -1,0 +1,29 @@
+@mixin responsive-xl {
+    @media screen and (max-width: 1280px) {
+        @content;
+    }
+}
+
+@mixin responsive-lg {
+    @media screen and (max-width: 1024px) {
+        @content;
+    }
+}
+
+@mixin responsive-md {
+    @media screen and (max-width: 768px) {
+        @content;
+    }
+}
+
+@mixin responsive-sm {
+    @media screen and (max-width: 640px) {
+        @content;
+    }
+}
+
+@mixin responsive-xs {
+    @media screen and (max-width: 500px) {
+        @content;
+    }
+}

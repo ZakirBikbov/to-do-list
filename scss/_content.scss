@@ -1,0 +1,112 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 1200px;
+    min-width: 300px;
+    padding: 25px;
+    height: 100vh;
+}
+
+.title {
+    font-size: 32px;
+    font-weight: 300;
+
+    @include responsive-xs {
+        font-size: 25px;
+    }
+}
+
+.filters {
+    display: flex;
+    align-items: flex-start;
+    list-style: none;
+    margin-top: 40px;
+
+    @include responsive-xs {
+        flex-direction: column;
+        margin-top: 20px;
+    }
+
+    li {
+        margin: 0 10px;
+        font-size: 20px;
+        font-weight: 300;
+
+        @include responsive-xs {
+            margin-top: 10px;
+            font-size: 16px;
+        }
+
+        &.selected {
+            border-bottom: 2px solid #000;
+            font-weight: 600;
+        }
+
+        &:hover {
+            cursor: pointer;
+        }
+    }
+}
+
+.tasks {
+    background-color: #FCFCFC;
+    list-style: none;
+    margin-top: 30px;
+    padding: 25px;
+    border-radius: 16px;
+
+    @include responsive-xs {
+        padding: 15px;
+    }
+
+    li {
+        padding: 20px;
+        padding-left: 30px;
+        position: relative;
+        font-size: 20px;
+        border-bottom: 1px solid #BEB5B5;
+
+        @include responsive-xs {
+            font-size: 16px;
+        }
+
+        &::before {
+            content: "";
+            width: 12px;
+            height: 12px;
+            background-color: #FFFFFF;
+            border: 1px solid #5A7FFF;
+            border-radius: 50%;
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        &.selected {
+            text-decoration: line-through;
+
+            &::before {
+                background-color: #5A7FFF;
+            }
+        }
+
+        &:hover {
+            cursor: pointer;
+        }
+    }
+}
+
+#add-btn {
+    color: #5F9CF8;
+    border: none;
+    background: none;
+    padding-top: 20px;
+    font-size: 20px;
+
+    &:hover {
+        cursor: pointer;
+    }
+}
