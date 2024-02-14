@@ -66,6 +66,7 @@ input, textarea, select {
   margin: 0 10px;
   font-size: 20px;
   font-weight: 300;
+  width: 130px;
 }
 @media screen and (max-width: 500px) {
   .filters li {
@@ -73,7 +74,7 @@ input, textarea, select {
     font-size: 16px;
   }
 }
-.filters li.selected {
+.filters li.selected span {
   border-bottom: 2px solid #000;
   font-weight: 600;
 }
