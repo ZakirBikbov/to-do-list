@@ -1,25 +1,36 @@
+// Фильтры
 const filters = document.querySelectorAll('.filters li');
+
+// Список задач
 const taskList = document.querySelector('.tasks');
-const todo = document.querySelector('.all-tasks');
-const inProgress = document.querySelector('.in-progress');
-const done = document.querySelector('.done');
+
+// Кнопка открытия модалки
 const addBtn = document.querySelector('#add-btn');
+
+// Модалка
 const modalWrapper = document.querySelector('.modal-wrapper');
-const saveBtn = document.querySelector('.modal-btn');
+
+// Инпуты с модалки
 const taskTitle = document.querySelector('.task-title');
 const taskDescription = document.querySelector('.task-description');
+const saveBtn = document.querySelector('.modal-btn');
 
+// Иконка для кнопки удаления
 const deleteIcon = '<svg width="20" height="26" viewBox="0 0 20 26" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.42857 23.1111C1.42857 24.7 2.71429 26 4.28571 26H15.7143C17.2857 26 18.5714 24.7 18.5714 23.1111V5.77778H1.42857V23.1111ZM4.28571 8.66667H15.7143V23.1111H4.28571V8.66667ZM15 1.44444L13.5714 0H6.42857L5 1.44444H0V4.33333H20V1.44444H15Z" fill="#FF5A5A" /></svg>';
 
+// Статусы задач
 const taskStatus = {
     ACTIVE: "ACTIVE",
     DONE: "DONE"
 }
 
+// Текущий фильтр
 let currentFilter = undefined;
 
+// Отображаемые задачи
 let tasks = [];
 
+// Автоинкремент для id задач
 const getNextId = () => {
     if (tasks.length === 0) {
         return 1;
@@ -27,6 +38,7 @@ const getNextId = () => {
     return tasks.reduce((acc, curr) => acc.id > curr.id ? acc : curr).id + 1;
 }
 
+// Очищение списка
 const clearTaskList = () => {
     const listItems = taskList.querySelectorAll('li');
     const listArray = Array.from(listItems);
@@ -54,14 +66,13 @@ filters.forEach(filter => {
     });
 });
 
-
+// Взаимодействие со списком
 taskList.addEventListener('click', function (event) {
     const clickedLi = event.target.closest('li');
     const taskId = parseInt(clickedLi.dataset.id);
     const accordionButton = event.target.closest('.accordion');
     // Раскрытие описания
     if (accordionButton && accordionButton === event.target) {
-        console.log(clickedLi.closest('.panel'))
         accordionButton.classList.toggle("active");
         const panel = clickedLi.querySelector('.panel');
         if (panel.style.maxHeight) {
@@ -82,9 +93,8 @@ taskList.addEventListener('click', function (event) {
         }
     }
     const deleteButton = event.target.closest('.delete');
-    // удаление таски
+    // удаление задачи
     if (deleteButton && deleteButton.contains(event.target)) {
-        console.log(deleteButton)
         tasks = tasks.filter(task => task.id !== taskId);
         localStorage.setItem('tasks', JSON.stringify(tasks));
         clearTaskList();
@@ -92,7 +102,7 @@ taskList.addEventListener('click', function (event) {
     }
 });
 
-// Отображение тасков
+// Отображение задач
 const showTask = (task) => {
     // Создаем html элемент таск
     const taskHTML = document.createElement('li');
@@ -101,19 +111,23 @@ const showTask = (task) => {
     }
     taskHTML.dataset.id = task.id;
 
+    // Создаем элемент для смены статуса задачи
     const checkSpan = document.createElement('span');
     taskHTML.append(checkSpan);
 
+    // Создаем элемент с названием таска
     const accordionButton = document.createElement('button');
     accordionButton.classList.add('accordion');
     accordionButton.innerText = task.title;
     taskHTML.append(accordionButton);
 
+    // Создаем кнопку удаления
     const deleteButton = document.createElement('button');
     deleteButton.classList.add('delete');
     deleteButton.insertAdjacentHTML('afterbegin', deleteIcon);
     taskHTML.append(deleteButton);
 
+    // Создаем элемент с описанием
     const panelDiv = document.createElement('div');
     panelDiv.classList.add('panel');
 
@@ -124,9 +138,9 @@ const showTask = (task) => {
     taskHTML.append(panelDiv);
 
     addBtn.before(taskHTML);
-    // taskList = document.querySelectorAll('.tasks li');
 }
 
+// Отображение задач с учетом текущего фильтра
 const showTasks = (status = undefined) => {
     let filteredTasks;
     if (status) {
@@ -170,6 +184,7 @@ saveBtn.addEventListener('click', () => {
     modalWrapper.style.display = 'none';
 })
 
+// Подгружаем сохраненные задачи из localStorage
 document.addEventListener('DOMContentLoaded', () => {
     const lsTasks = localStorage.getItem('tasks');
     if (!lsTasks) {
