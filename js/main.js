@@ -14,6 +14,8 @@ const taskStatus = {
     DONE: "DONE"
 }
 
+let currentFilter = undefined;
+
 const tasks = [];
 
 const getNextId = () => {
@@ -23,22 +25,40 @@ const getNextId = () => {
     return tasks.reduce((acc, curr) => acc.id > curr.id ? acc : curr).id + 1;
 }
 
+const clearTaskList = () => {
+    const listItems = taskList.querySelectorAll('li');
+    const listArray = Array.from(listItems);
+    listArray.forEach(function (li) {
+        li.remove();
+    });
+}
+
 // Переключение фильтров
 filters.forEach(filter => {
-    filter.addEventListener('click', function () {
+    filter.addEventListener('click', function (event) {
         filters.forEach(function (li) {
             li.classList.remove('selected');
         });
         this.classList.add('selected');
+        clearTaskList();
+        if (event.target.innerText === 'Активные') {
+            currentFilter = taskStatus.ACTIVE;
+        } else if (event.target.innerText === 'Выполненные') {
+            currentFilter = taskStatus.DONE;
+        } else {
+            currentFilter = undefined;
+        }
+        showTasks(currentFilter)
     });
 });
 
-// Раскрытие описания
+
 taskList.addEventListener('click', function (event) {
     const clickedLi = event.target.closest('li');
-    if (clickedLi && taskList.contains(clickedLi)) {
-        const accordionButton = clickedLi.children[1];
-        accordionButton.classList.toggle("active"); // Исправлено здесь
+    const accordionButton = event.target.closest('.accordion');
+    // Раскрытие описания
+    if (accordionButton && accordionButton === event.target) {
+        accordionButton.classList.toggle("active");
         const panel = accordionButton.nextElementSibling;
         if (panel.style.maxHeight) {
             panel.style.maxHeight = null;
@@ -46,9 +66,20 @@ taskList.addEventListener('click', function (event) {
             panel.style.maxHeight = panel.scrollHeight + "px";
         }
     }
+    const checkSpan = event.target.closest('span');
+    // отметка выполнения
+    if (checkSpan && checkSpan === event.target) {
+        const taskId = parseInt(clickedLi.dataset.id);
+        const task = tasks.find(task => task.id === taskId);
+        if (task) {
+            task.status = task.status === taskStatus.ACTIVE ? taskStatus.DONE : taskStatus.ACTIVE;
+            clickedLi.classList.toggle("selected");
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+            clearTaskList();
+            showTasks(currentFilter);
+        }
+    }
 });
-
-
 
 // Отображение тасков
 const showTask = (task) => {
@@ -80,6 +111,17 @@ const showTask = (task) => {
     // taskList = document.querySelectorAll('.tasks li');
 }
 
+const showTasks = (status = undefined) => {
+    let filteredTasks;
+    if (status) {
+        filteredTasks = tasks.filter(task => task.status === status);
+    } else {
+        filteredTasks = tasks;
+    }
+    for (let i = 0; i < filteredTasks.length; i++) {
+        showTask(filteredTasks[i]);
+    }
+}
 
 // Открытие модалки для добавления таски
 addBtn.addEventListener('click', () => {
@@ -118,7 +160,5 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
     tasks.push(...JSON.parse(lsTasks));
-    for (let i = 0; i < tasks.length; i++) {
-        showTask(tasks[i]);
-    }
+    showTasks();
 })

@@ -132,6 +132,7 @@ input, textarea, select {
 }
 .tasks li .panel p {
   padding-bottom: 10px;
+  font-size: 16px;
   word-break: break-all;
 }
 .tasks li.opened {
@@ -144,14 +145,17 @@ input, textarea, select {
   background-color: #FFFFFF;
   border: 1px solid #5A7FFF;
   border-radius: 50%;
-  margin-right: 25px;
 }
 .tasks li span:hover {
   cursor: pointer;
   background-color: #5A7FFF;
 }
 .tasks li.selected .accordion {
+  color: #979797;
   text-decoration: line-through;
+}
+.tasks li.selected .panel {
+  color: #979797;
 }
 .tasks li.selected span {
   background-color: #5A7FFF;

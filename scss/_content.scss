@@ -100,6 +100,7 @@
 
             p {
                 padding-bottom: 10px;
+                font-size: 16px;
                 word-break: break-all;
             }
         }
@@ -115,7 +116,6 @@
             background-color: #FFFFFF;
             border: 1px solid #5A7FFF;
             border-radius: 50%;
-            margin-right: 25px;
 
             &:hover {
                 cursor: pointer;
@@ -125,7 +125,12 @@
 
         &.selected {
             .accordion {
+                color: #979797;
                 text-decoration: line-through;
+            }
+
+            .panel {
+                color: #979797;
             }
 
             span {
