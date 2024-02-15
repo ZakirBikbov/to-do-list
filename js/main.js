@@ -9,6 +9,8 @@ const saveBtn = document.querySelector('.modal-btn');
 const taskTitle = document.querySelector('.task-title');
 const taskDescription = document.querySelector('.task-description');
 
+const deleteIcon = '<svg width="20" height="26" viewBox="0 0 20 26" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.42857 23.1111C1.42857 24.7 2.71429 26 4.28571 26H15.7143C17.2857 26 18.5714 24.7 18.5714 23.1111V5.77778H1.42857V23.1111ZM4.28571 8.66667H15.7143V23.1111H4.28571V8.66667ZM15 1.44444L13.5714 0H6.42857L5 1.44444H0V4.33333H20V1.44444H15Z" fill="#FF5A5A" /></svg>';
+
 const taskStatus = {
     ACTIVE: "ACTIVE",
     DONE: "DONE"
@@ -16,7 +18,7 @@ const taskStatus = {
 
 let currentFilter = undefined;
 
-const tasks = [];
+let tasks = [];
 
 const getNextId = () => {
     if (tasks.length === 0) {
@@ -55,11 +57,13 @@ filters.forEach(filter => {
 
 taskList.addEventListener('click', function (event) {
     const clickedLi = event.target.closest('li');
+    const taskId = parseInt(clickedLi.dataset.id);
     const accordionButton = event.target.closest('.accordion');
     // Раскрытие описания
     if (accordionButton && accordionButton === event.target) {
+        console.log(clickedLi.closest('.panel'))
         accordionButton.classList.toggle("active");
-        const panel = accordionButton.nextElementSibling;
+        const panel = clickedLi.querySelector('.panel');
         if (panel.style.maxHeight) {
             panel.style.maxHeight = null;
         } else {
@@ -69,15 +73,22 @@ taskList.addEventListener('click', function (event) {
     const checkSpan = event.target.closest('span');
     // отметка выполнения
     if (checkSpan && checkSpan === event.target) {
-        const taskId = parseInt(clickedLi.dataset.id);
         const task = tasks.find(task => task.id === taskId);
         if (task) {
             task.status = task.status === taskStatus.ACTIVE ? taskStatus.DONE : taskStatus.ACTIVE;
-            clickedLi.classList.toggle("selected");
             localStorage.setItem('tasks', JSON.stringify(tasks));
             clearTaskList();
             showTasks(currentFilter);
         }
+    }
+    const deleteButton = event.target.closest('.delete');
+    // удаление таски
+    if (deleteButton && deleteButton.contains(event.target)) {
+        console.log(deleteButton)
+        tasks = tasks.filter(task => task.id !== taskId);
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+        clearTaskList();
+        showTasks(currentFilter);
     }
 });
 
@@ -97,6 +108,11 @@ const showTask = (task) => {
     accordionButton.classList.add('accordion');
     accordionButton.innerText = task.title;
     taskHTML.append(accordionButton);
+
+    const deleteButton = document.createElement('button');
+    deleteButton.classList.add('delete');
+    deleteButton.insertAdjacentHTML('afterbegin', deleteIcon);
+    taskHTML.append(deleteButton);
 
     const panelDiv = document.createElement('div');
     panelDiv.classList.add('panel');

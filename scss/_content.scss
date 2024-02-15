@@ -91,6 +91,24 @@
             transition: 0.4s;
         }
 
+        .delete {
+            background: none;
+            border: none;
+            margin-right: 25px;
+        
+            path {
+                fill: #FF5A5A;
+            }
+
+            &:hover {
+                cursor: pointer;
+
+                path {
+                    fill: #d40e0e;
+                }
+            }
+        }
+
         .panel {
             width: 100%;
             padding: 0 18px;
