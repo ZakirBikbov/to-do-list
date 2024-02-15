@@ -63,33 +63,72 @@
     }
 
     li {
-        padding: 20px;
-        padding-left: 30px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        padding-left: 25px;
         position: relative;
         font-size: 20px;
         border-bottom: 1px solid #BEB5B5;
+        overflow: hidden;
+        transition: all ease-in-out 0.2s;
+        max-height: 300px;
 
         @include responsive-xs {
             font-size: 16px;
         }
 
-        &::before {
-            content: "";
-            width: 12px;
-            height: 12px;
+        .accordion {
+            flex: 1;
+            font-size: inherit;
+            background: none;
+            padding: 20px;
+            color: #444;
+            cursor: pointer;
+            text-align: left;
+            border: none;
+            outline: none;
+            transition: 0.4s;
+        }
+
+        .panel {
+            width: 100%;
+            padding: 0 18px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.2s ease-out;
+
+            p {
+                padding-bottom: 10px;
+                word-break: break-all;
+            }
+        }
+
+        &.opened {
+            max-height: 300px;
+        }
+
+        span {
+            flex: 0 0 14px;
+            width: 14px;
+            height: 14px;
             background-color: #FFFFFF;
             border: 1px solid #5A7FFF;
             border-radius: 50%;
-            position: absolute;
-            left: 0;
-            top: 50%;
-            transform: translateY(-50%);
+            margin-right: 25px;
+
+            &:hover {
+                cursor: pointer;
+                background-color: #5A7FFF;
+            }
         }
 
         &.selected {
-            text-decoration: line-through;
+            .accordion {
+                text-decoration: line-through;
+            }
 
-            &::before {
+            span {
                 background-color: #5A7FFF;
             }
         }

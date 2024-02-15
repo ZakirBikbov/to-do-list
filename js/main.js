@@ -1,5 +1,5 @@
 const filters = document.querySelectorAll('.filters li');
-const taskListHtml = document.querySelector('.tasks');
+const taskList = document.querySelector('.tasks');
 const todo = document.querySelector('.all-tasks');
 const inProgress = document.querySelector('.in-progress');
 const done = document.querySelector('.done');
@@ -20,7 +20,7 @@ const getNextId = () => {
     if (tasks.length === 0) {
         return 1;
     }
-    return tasks.reduce((acc, curr) => acc.id > curr.id ? acc : curr).id;
+    return tasks.reduce((acc, curr) => acc.id > curr.id ? acc : curr).id + 1;
 }
 
 // Переключение фильтров
@@ -33,6 +33,23 @@ filters.forEach(filter => {
     });
 });
 
+// Раскрытие описания
+taskList.addEventListener('click', function (event) {
+    const clickedLi = event.target.closest('li');
+    if (clickedLi && taskList.contains(clickedLi)) {
+        const accordionButton = clickedLi.children[1];
+        accordionButton.classList.toggle("active"); // Исправлено здесь
+        const panel = accordionButton.nextElementSibling;
+        if (panel.style.maxHeight) {
+            panel.style.maxHeight = null;
+        } else {
+            panel.style.maxHeight = panel.scrollHeight + "px";
+        }
+    }
+});
+
+
+
 // Отображение тасков
 const showTask = (task) => {
     // Создаем html элемент таск
@@ -41,9 +58,26 @@ const showTask = (task) => {
         taskHTML.classList.add('selected');
     }
     taskHTML.dataset.id = task.id;
-    console.log(task.title)
-    taskHTML.innerText = task.title;
+
+    const checkSpan = document.createElement('span');
+    taskHTML.append(checkSpan);
+
+    const accordionButton = document.createElement('button');
+    accordionButton.classList.add('accordion');
+    accordionButton.innerText = task.title;
+    taskHTML.append(accordionButton);
+
+    const panelDiv = document.createElement('div');
+    panelDiv.classList.add('panel');
+
+    const descriptionP = document.createElement('p');
+    descriptionP.innerText = task.description;
+    panelDiv.append(descriptionP);
+
+    taskHTML.append(panelDiv);
+
     addBtn.before(taskHTML);
+    // taskList = document.querySelectorAll('.tasks li');
 }
 
 
@@ -58,6 +92,7 @@ addBtn.addEventListener('click', () => {
     });
 })
 
+// Сохраняем новую задачу
 saveBtn.addEventListener('click', () => {
     if (taskTitle.value.trim() === '' ||
         taskDescription.value.trim() === '') {
@@ -69,6 +104,8 @@ saveBtn.addEventListener('click', () => {
         description: taskDescription.value,
         status: taskStatus.ACTIVE
     }
+    taskTitle.value = '';
+    taskDescription.value = '';
     tasks.push(task);
     showTask(task);
     localStorage.setItem('tasks', JSON.stringify(tasks));
@@ -81,7 +118,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
     tasks.push(...JSON.parse(lsTasks));
-    console.log('tasks: ', tasks);
     for (let i = 0; i < tasks.length; i++) {
         showTask(tasks[i]);
     }
